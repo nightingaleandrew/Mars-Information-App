@@ -11,12 +11,30 @@ response = requests.get("https://api.nasa.gov/insight_weather/?api_key={}&feedty
 
 res_stat_code = response.status_code
 weather_data = response.json()
-print(weather_data)
+# print("weather data", weather_data['695'])
 
-#looking at images
+#Should really clean the below up and make it dynanmic. It is rather like messy like Derby County's season lol
+for sol, values in weather_data.items():
+    try:
+        try:
+            sol_details = {"sol": int(sol), "min_temp": values.get('AT', {}).get('mn'), "max_temp": values.get('AT', {}).get('mx')}
+
+            if sol_details['min_temp'] == None:
+                sol_details['min_temp'] = "n/a"
+
+            print("Sol: {}, Min Temp: {}, Max Temp: {}".format(sol_details['sol'], sol_details['min_temp'], sol_details['max_temp']))
+        except AttributeError:
+            pass
+
+    except ValueError:
+        pass
+
+
+
+#looking at images - some of them are pretty cool
 response_img = requests.get("https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?earth_date=2015-6-3&api_key={}".format(api_key))
 image_data = response_img.json()
-print(image_data)
+# print("image data", image_data)
 
 
 
